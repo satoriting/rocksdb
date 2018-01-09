@@ -2590,15 +2590,16 @@ Status VersionSet::LogAndApply(ColumnFamilyData* column_family_data,
     mu->Unlock();
 
     TEST_SYNC_POINT("VersionSet::LogAndApply:WriteManifest");
-    if (!w.edit_list.front()->IsColumnFamilyManipulation() &&
-        this->GetColumnFamilySet()->get_table_cache()->GetCapacity() ==
-            TableCache::kInfiniteCapacity) {
+    if (!w.edit_list.front()->IsColumnFamilyManipulation()) {
       // unlimited table cache. Pre-load table handle now.
       // Need to do it out of the mutex.
       builder_guard->version_builder()->LoadTableHandlers(
           column_family_data->internal_stats(),
           column_family_data->ioptions()->optimize_filters_for_hits,
-          true /* prefetch_index_and_filter_in_cache */);
+          this->GetColumnFamilySet()->get_table_cache()->GetCapacity() ==
+              TableCache::
+                  kInfiniteCapacity /* prefetch_index_and_filter_in_cache */,
+          false /* is_initial_load */);
     }
 
     // This is fine because everything inside of this block is serialized --
@@ -3061,14 +3062,10 @@ Status VersionSet::Recover(
       assert(builders_iter != builders.end());
       auto* builder = builders_iter->second->version_builder();
 
-      if (GetColumnFamilySet()->get_table_cache()->GetCapacity() ==
-          TableCache::kInfiniteCapacity) {
-        // unlimited table cache. Pre-load table handle now.
-        // Need to do it out of the mutex.
-        builder->LoadTableHandlers(
-            cfd->internal_stats(), db_options_->max_file_opening_threads,
-            false /* prefetch_index_and_filter_in_cache */);
-      }
+      builder->LoadTableHandlers(cfd->internal_stats(),
+                                 db_options_->max_file_opening_threads,
+                                 false /* prefetch_index_and_filter_in_cache */,
+                                 true /* is_initial_load */);
 
       Version* v =
           new Version(cfd, this, env_options_, current_version_number_++);

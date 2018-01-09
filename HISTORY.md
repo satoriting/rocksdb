@@ -1,5 +1,7 @@
 # Rocksdb Change Log
 ## Unreleased
+### New Features
+* RocksDB may choose to preopen some files even if options.max_open_files != -1
 
 ## 5.10.0 (12/11/2017)
 ### Public API Change

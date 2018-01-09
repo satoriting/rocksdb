@@ -33,7 +33,8 @@ class VersionBuilder {
   void Apply(VersionEdit* edit);
   void SaveTo(VersionStorageInfo* vstorage);
   void LoadTableHandlers(InternalStats* internal_stats, int max_threads,
-                         bool prefetch_index_and_filter_in_cache);
+                         bool prefetch_index_and_filter_in_cache,
+                         bool is_initial_load);
   void MaybeAddFile(VersionStorageInfo* vstorage, int level, FileMetaData* f);
 
  private:
