@@ -626,8 +626,6 @@ set(SOURCES
         utilities/cassandra/format.cc
         utilities/cassandra/merge_operator.cc
         utilities/checkpoint/checkpoint_impl.cc
-        utilities/col_buf_decoder.cc
-        utilities/col_buf_encoder.cc
         utilities/compaction_filters/remove_emptyvalue_compactionfilter.cc
         utilities/debug.cc
         utilities/env_mirror.cc
@@ -953,7 +951,6 @@ if(WITH_TESTS)
         utilities/options/options_util_test.cc
         utilities/persistent_cache/hash_table_test.cc
         utilities/persistent_cache/persistent_cache_test.cc
-        utilities/redis/redis_lists_test.cc
         utilities/simulator_cache/sim_cache_test.cc
         utilities/table_properties_collectors/compact_on_deletion_collector_test.cc
         utilities/transactions/optimistic_transaction_test.cc
